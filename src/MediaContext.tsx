@@ -1,8 +1,27 @@
 import React, { useContext } from 'react';
 
-interface MediaContextType {
+interface MediaContextType extends MediaContextProps {
   // Ref to attach on media
   mediaRef: React.RefObject<HTMLVideoElement | HTMLAudioElement>;
+
+  // Event Handler
+  mediaEventHandlers: {
+    onSeeking: () => void;
+    onSeeked: () => void;
+    onLoadedMetadata: () => void;
+    onRateChange: () => void;
+    onVolumeChange: () => void;
+    onCanPlay: () => void;
+    onWaiting: () => void;
+    onPause: () => void;
+    onPlay: () => void;
+    onTimeUpdate: () => void;
+  };
+}
+
+export const MediaContext = React.createContext<MediaContextType | null>(null);
+
+export interface MediaContextProps {
   // Prop Getter for media
   getMedia: () => HTMLVideoElement | HTMLAudioElement;
 
@@ -13,23 +32,9 @@ interface MediaContextType {
   paused: boolean;
   duration: number;
   isLoading: boolean;
-
-  // Event Handler
-  onSeeking: () => void;
-  onSeeked: () => void;
-  onLoadedMetadata: () => void;
-  onRateChange: () => void;
-  onVolumeChange: () => void;
-  onCanPlay: () => void;
-  onWaiting: () => void;
-  onPause: () => void;
-  onPlay: () => void;
-  onTimeUpdate: () => void;
 }
 
-export const MediaContext = React.createContext<MediaContextType | null>(null);
-
-export const useMediaContext = () => {
+export const _useMediaContext = () => {
   const mediaContext = useContext(MediaContext);
 
   if (!mediaContext) {
@@ -38,3 +43,68 @@ export const useMediaContext = () => {
 
   return mediaContext;
 };
+
+export const useMediaContext = () => {
+  const mediaContext = useContext(MediaContext);
+
+  if (!mediaContext) {
+    throw new Error('Please place inside MediaContext');
+  }
+
+  const { mediaEventHandlers, mediaRef, ...rest } = mediaContext;
+
+  return rest;
+};
+
+export const withMediaContext = <P extends { mediaContext: MediaContextProps }>(
+  Component: React.ComponentType<P>
+) => (props: Omit<P, 'mediaContext'>) => {
+  const mediaContext = useMediaContext();
+  return <Component {...(props as P)} mediaContext={mediaContext} />;
+};
+
+interface HelloProps {
+  a: number;
+  mediaContext: MediaContextProps;
+}
+
+const Hello: React.FC<HelloProps> = ({ a }) => <h1>Hi</h1>;
+
+const Aha = withMediaContext(Hello);
+
+const Use = () => <Aha a={3} />;
+
+interface MediaContextConsumerProps {
+  children?: (mediaContext: MediaContextProps) => React.ReactNode;
+  render?: (mediaContext: MediaContextProps) => React.ReactNode;
+}
+
+export const MediaContextConsumer: React.FC<MediaContextConsumerProps> = ({
+  children,
+  render,
+}) => {
+  const mediaContext = useMediaContext();
+
+  const _render = render || children;
+  if (!_render) {
+    throw new Error('Please provide either children or render prop');
+  }
+
+  return <>{_render(mediaContext)}</>;
+};
+
+const LET = () => (
+  <MediaContextConsumer>
+    {({ currentTime }) => {
+      return currentTime;
+    }}
+  </MediaContextConsumer>
+);
+
+const LET2 = () => (
+  <MediaContextConsumer
+    render={({ currentTime }) => {
+      return currentTime;
+    }}
+  />
+);

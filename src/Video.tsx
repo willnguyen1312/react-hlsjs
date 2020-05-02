@@ -1,19 +1,10 @@
 import React from 'react';
-import { useMediaContext } from './MediaContext';
+import { _useMediaContext } from './MediaContext';
 
 export const Video = () => {
   const {
     getMedia,
-    onSeeking,
-    onSeeked,
-    onLoadedMetadata,
-    onRateChange,
-    onVolumeChange,
-    onCanPlay,
-    onWaiting,
-    onPause,
-    onTimeUpdate,
-    onPlay,
+    mediaEventHandlers,
     mediaRef,
     paused,
     playbackRate,
@@ -21,7 +12,7 @@ export const Video = () => {
     isLoading,
     currentTime,
     volume,
-  } = useMediaContext();
+  } = _useMediaContext();
 
   const togglePlay = () => {
     const video = getMedia();
@@ -48,16 +39,7 @@ export const Video = () => {
     <div>
       <h1 style={{ textAlign: 'center' }}>Hello Video</h1>
       <video
-        onSeeking={onSeeking}
-        onSeeked={onSeeked}
-        onLoadedMetadata={onLoadedMetadata}
-        onRateChange={onRateChange}
-        onVolumeChange={onVolumeChange}
-        onCanPlay={onCanPlay}
-        onWaiting={onWaiting}
-        onPause={onPause}
-        onPlay={onPlay}
-        onTimeUpdate={onTimeUpdate}
+        {...mediaEventHandlers}
         controls
         style={{
           width: '100%',

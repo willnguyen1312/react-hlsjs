@@ -108,16 +108,19 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         paused,
         playbackRate,
         volume,
-        onSeeking,
-        onSeeked,
-        onLoadedMetadata,
-        onRateChange,
-        onVolumeChange,
-        onCanPlay,
-        onWaiting,
-        onPause,
-        onPlay,
-        onTimeUpdate,
+
+        mediaEventHandlers: {
+          onSeeking,
+          onSeeked,
+          onLoadedMetadata,
+          onRateChange,
+          onVolumeChange,
+          onCanPlay,
+          onWaiting,
+          onPause,
+          onPlay,
+          onTimeUpdate,
+        },
       }}
     >
       {children}
