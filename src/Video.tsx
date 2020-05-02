@@ -37,24 +37,26 @@ export const Video = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>Hello Video</h1>
+      <h1>Hello Video</h1>
       <video
         {...mediaEventHandlers}
         controls
+        autoPlay
         style={{
-          width: '100%',
-          height: 600,
+          margin: 'left',
+          height: 400,
+          display: 'block',
         }}
         ref={mediaRef as React.RefObject<HTMLVideoElement>}
       />
       <button onClick={togglePlay}>{paused ? 'Play' : 'Pause'}</button>
-      <p>{`PlaybackRate: ${playbackRate}`}</p>
-      <p>{!!duration && `Duration ${duration}`}</p>
       <button onClick={changePlaybackRate}>Change playbackRate</button>
       <button onClick={changeVolume}>Change volume</button>
-      <p>{isLoading && 'Loading'}</p>
+      <p>{`PlaybackRate: ${playbackRate}`}</p>
+      <p>{!!duration && `Duration ${duration}`}</p>
       <p>{`Volume: ${volume}`}</p>
-      <p>{currentTime}</p>
+      <p>{`Current time: ${currentTime}`}</p>
+      <p>{isLoading && 'Loading'}</p>
     </div>
   );
 };

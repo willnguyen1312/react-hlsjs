@@ -44,6 +44,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         newHls.loadSource(mediaSource);
       });
       hls = newHls;
+      (window as any).hls = hls;
     } else if (media && media.canPlayType('application/vnd.apple.mpegurl')) {
       // For native support like Apple
       media.src = mediaSource;
@@ -81,7 +82,11 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const onLoadedMetadata = () => setDuration(getMedia().duration);
+  const onLoadedMetadata = () => {
+    const media = getMedia();
+    setDuration(media.duration);
+    media.play();
+  };
 
   const onRateChange = () => setPlaybackRate(getMedia().playbackRate);
 
