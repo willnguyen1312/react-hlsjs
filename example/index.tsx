@@ -6,6 +6,13 @@ import { Audio, Video, MediaProvider } from '../.';
 const videoSrc1 = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
 const videoSrc2 =
   'https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8';
+const videoSrc3 =
+  'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8';
+const videoSrc4 =
+  'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
+
+const videoSrc5 =
+  'https://s3-us-west-2.amazonaws.com/axon-test-assets/hls/vertical/manifest.m3u8';
 const audioSrc1 =
   'https://pl.streamingvideoprovider.com/mp3-playlist/playlist.m3u8';
 
@@ -13,7 +20,7 @@ const audioSrc2 =
   'https://s3.amazonaws.com/qa.jwplayer.com/~alex/121628/new_master.m3u8';
 
 const App = () => {
-  const [videoSource, setVideoSource] = React.useState(videoSrc1);
+  const [videoSource, setVideoSource] = React.useState(videoSrc3);
   const [audioSource, setAudioSource] = React.useState(audioSrc1);
 
   const toggleVideoSource = () => {
@@ -21,7 +28,7 @@ const App = () => {
   };
 
   const toggleAudioSource = () => {
-    setAudioSource(videoSource === videoSrc1 ? videoSrc2 : videoSrc1);
+    setAudioSource(audioSource === audioSrc1 ? audioSrc2 : audioSrc1);
   };
 
   return (
