@@ -29,8 +29,6 @@ const App = () => {
     setAudioSource(audioSource === audioSrc1 ? audioSrc2 : audioSrc1);
   };
 
-  console.log(videoSource === videoSrc3);
-
   return (
     <div>
       {/* <button onClick={toggleAudioSource}>Toggle Audio Source</button>

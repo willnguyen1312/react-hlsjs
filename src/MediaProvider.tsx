@@ -76,12 +76,6 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const onSeeked = () => {
-    if (isLoading) {
-      setIsLoading(false);
-    }
-  };
-
   const onLoadedMetadata = () => {
     const media = getMedia();
     setDuration(media.duration);
@@ -97,6 +91,8 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const onPlay = () => setPaused(false);
 
   const onCanPlay = () => setIsLoading(false);
+
+  const onEmptied = () => setIsLoading(true);
 
   const onWaiting = () => setIsLoading(true);
 
@@ -116,7 +112,6 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
         mediaEventHandlers: {
           onSeeking,
-          onSeeked,
           onLoadedMetadata,
           onRateChange,
           onVolumeChange,
@@ -125,6 +120,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
           onPause,
           onPlay,
           onTimeUpdate,
+          onEmptied,
         },
       }}
     >

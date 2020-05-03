@@ -7,7 +7,6 @@ interface MediaContextType extends MediaContextProps {
   // Event Handler
   mediaEventHandlers: {
     onSeeking: () => void;
-    onSeeked: () => void;
     onLoadedMetadata: () => void;
     onRateChange: () => void;
     onVolumeChange: () => void;
@@ -16,6 +15,7 @@ interface MediaContextType extends MediaContextProps {
     onPause: () => void;
     onPlay: () => void;
     onTimeUpdate: () => void;
+    onEmptied: () => void;
   };
 }
 
