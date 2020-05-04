@@ -10,14 +10,16 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   children,
   mediaSource,
 }) => {
-  let hls: Hls | null = null;
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
-  const [paused, setPaused] = useState(true);
+  const hlsRef = useRef<Hls>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [ended, setEnded] = useState(false);
+  const [paused, setPaused] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getMedia = () => {
     const media = mediaRef.current;
@@ -28,6 +30,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   };
 
   const releaseHlsResource = () => {
+    const hls = hlsRef.current;
     if (hls) {
       hls.destroy();
     }
@@ -43,8 +46,8 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       newHls.on(Hls.Events.MEDIA_ATTACHED, () => {
         newHls.loadSource(mediaSource);
       });
-      hls = newHls;
-      (window as any).hls = hls;
+      (hlsRef.current as any) = newHls;
+      (window as any).hls = newHls;
     } else if (media && media.canPlayType('application/vnd.apple.mpegurl')) {
       // For native support like Apple
       media.src = mediaSource;
@@ -84,11 +87,18 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
   const onRateChange = () => setPlaybackRate(getMedia().playbackRate);
 
-  const onVolumeChange = () => setVolume(getMedia().volume);
+  const onVolumeChange = () => {
+    const media = getMedia();
+    setMuted(media.muted);
+    setVolume(media.volume);
+  };
 
   const onPause = () => setPaused(true);
 
-  const onPlay = () => setPaused(false);
+  const onPlay = () => {
+    setPaused(false);
+    setEnded(false);
+  };
 
   const onCanPlay = () => setIsLoading(false);
 
@@ -97,6 +107,8 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const onWaiting = () => setIsLoading(true);
 
   const onTimeUpdate = () => setCurrentTime(getMedia().currentTime);
+
+  const onEnded = () => setEnded(true);
 
   return (
     <MediaContext.Provider
@@ -109,6 +121,8 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         paused,
         playbackRate,
         volume,
+        ended,
+        muted,
 
         mediaEventHandlers: {
           onSeeking,
@@ -121,6 +135,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
           onPlay,
           onTimeUpdate,
           onEmptied,
+          onEnded,
         },
       }}
     >

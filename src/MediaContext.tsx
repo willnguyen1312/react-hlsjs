@@ -16,6 +16,7 @@ interface MediaContextType extends MediaContextProps {
     onPlay: () => void;
     onTimeUpdate: () => void;
     onEmptied: () => void;
+    onEnded: () => void;
   };
 }
 
@@ -27,10 +28,12 @@ export interface MediaContextProps {
 
   // Video Properties
   currentTime: number;
-  volume: number;
-  playbackRate: number;
-  paused: boolean;
   duration: number;
+  ended: boolean;
+  paused: boolean;
+  playbackRate: number;
+  volume: number;
+  muted: boolean;
   isLoading: boolean;
 }
 
