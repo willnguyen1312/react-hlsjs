@@ -153,6 +153,9 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       if (playPromiseRef.current) {
         await playPromiseRef.current;
         media.pause();
+      } else {
+        // For IE's weirdness
+        media.pause();
       }
     }
   };
