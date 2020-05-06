@@ -22,9 +22,15 @@ interface MediaContextType extends MediaContextProps {
 
 export const MediaContext = React.createContext<MediaContextType | null>(null);
 
+export type Resolutions = number[];
+
 export interface MediaContextProps {
   // Prop Getter for media
   getMedia: () => HTMLVideoElement | HTMLAudioElement;
+
+  // Streaming properties
+  resolutions: Resolutions;
+  setResolution: (resolutionIndex: number) => void;
 
   // Video Properties
   currentTime: number;

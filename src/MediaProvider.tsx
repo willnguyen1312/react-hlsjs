@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import Hls from 'hls.js';
-import { MediaContext } from './MediaContext';
+import { MediaContext, Resolutions } from './MediaContext';
 
 interface MediaProviderProps {
   mediaSource: string;
@@ -12,6 +12,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 }) => {
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   const hlsRef = useRef<Hls>(null);
+  const [resolutions, setResolutions] = useState<Resolutions>([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [ended, setEnded] = useState(false);
@@ -27,6 +28,14 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       throw new Error('media element is not available');
     }
     return media;
+  };
+
+  const getHls = () => {
+    const hls = hlsRef.current;
+    if (!hls) {
+      throw new Error('HLS instance is not available');
+    }
+    return hls;
   };
 
   const releaseHlsResource = () => {
@@ -46,6 +55,13 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       newHls.on(Hls.Events.MEDIA_ATTACHED, () => {
         newHls.loadSource(mediaSource);
       });
+
+      newHls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
+        const levels = (data.levels as unknown) as Hls.Level[];
+        const newResolutions = levels.map(level => level.height);
+        setResolutions(newResolutions);
+      });
+
       (hlsRef.current as any) = newHls;
       (window as any).hls = newHls;
     } else if (media && media.canPlayType('application/vnd.apple.mpegurl')) {
@@ -55,6 +71,11 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
     return releaseHlsResource;
   }, [mediaSource]);
+
+  const setResolution = (resolutionIndex: number) => {
+    const hlsInstance = getHls();
+    hlsInstance.currentLevel = resolutionIndex;
+  };
 
   const checkMediaHasDataToPlay = (time: number) => {
     const media = getMedia();
@@ -115,6 +136,12 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       value={{
         mediaRef,
         getMedia,
+
+        // Streaming properties
+        resolutions,
+        setResolution,
+
+        // Media properties
         currentTime,
         duration,
         isLoading,

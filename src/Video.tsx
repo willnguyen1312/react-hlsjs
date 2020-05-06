@@ -12,6 +12,8 @@ export const Video = () => {
     isLoading,
     currentTime,
     volume,
+    resolutions,
+    setResolution,
   } = _useMediaContext();
 
   const togglePlay = () => {
@@ -56,6 +58,15 @@ export const Video = () => {
       <p>{!!duration && `Duration ${duration}`}</p>
       <p>{`Volume: ${volume}`}</p>
       <p>{`Current time: ${currentTime}`}</p>
+      <p>Resolution</p>
+      <div style={{ display: 'flex' }}>
+        <button onClick={() => setResolution(-1)}>Auto</button>
+        {resolutions.map((resolution, index) => (
+          <button key={resolution} onClick={() => setResolution(index)}>
+            {resolution}
+          </button>
+        ))}
+      </div>
       <p>{isLoading && 'Loading'}</p>
     </div>
   );
