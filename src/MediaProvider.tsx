@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import Hls from 'hls.js';
-import { MediaContext, Resolutions } from './MediaContext';
+import { MediaContext } from './MediaContext';
 
 interface MediaProviderProps {
   mediaSource: string;
@@ -10,17 +10,18 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   children,
   mediaSource,
 }) => {
+  const playPromiseRef = useRef<Promise<void>>(null);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   const hlsRef = useRef<Hls>(null);
-  const [resolutions, setResolutions] = useState<Resolutions>([]);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [ended, setEnded] = useState(false);
-  const [paused, setPaused] = useState(true);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const [volume, setVolume] = useState(1);
-  const [muted, setMuted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [levels, updateLevels] = useState<Hls.Level[]>([]);
+  const [currentTime, updateCurrentTime] = useState(0);
+  const [duration, updateDuration] = useState(0);
+  const [ended, updateEnded] = useState(false);
+  const [paused, updatePaused] = useState(true);
+  const [playbackRate, updatePlaybackRate] = useState(1);
+  const [volume, updateVolume] = useState(1);
+  const [muted, updateMuted] = useState(false);
+  const [isLoading, updateIsLoading] = useState(true);
 
   const getMedia = () => {
     const media = mediaRef.current;
@@ -57,28 +58,27 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       });
 
       newHls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
-        const levels = (data.levels as unknown) as Hls.Level[];
-        const newResolutions = levels.map(level => level.height);
-        setResolutions(newResolutions);
+        updateLevels((data.levels as unknown) as Hls.Level[]);
       });
 
       (hlsRef.current as any) = newHls;
       (window as any).hls = newHls;
     } else if (media && media.canPlayType('application/vnd.apple.mpegurl')) {
-      // For native support like Apple
+      // For native support like Apple's safari
       media.src = mediaSource;
     }
 
     return releaseHlsResource;
   }, [mediaSource]);
 
-  const setResolution = (resolutionIndex: number) => {
+  const setLevel = (level: number = -1) => {
     const hlsInstance = getHls();
-    hlsInstance.currentLevel = resolutionIndex;
+    hlsInstance.currentLevel = level;
   };
 
-  const checkMediaHasDataToPlay = (time: number) => {
+  const checkMediaHasDataToPlay = () => {
     const media = getMedia();
+    const currentTime = media.currentTime;
     const timeRanges = Array.from(
       { length: media.buffered.length },
       (_, index) => {
@@ -88,48 +88,74 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
     return timeRanges.some(timeRange => {
       const [start, end] = timeRange;
-      return time >= start && time <= end;
+      return currentTime >= start && currentTime <= end;
     });
   };
 
   const onSeeking = () => {
     const media = getMedia();
-    setCurrentTime(media.currentTime);
-    if (!checkMediaHasDataToPlay(media.currentTime)) {
-      setIsLoading(true);
+    updateCurrentTime(media.currentTime);
+    if (!checkMediaHasDataToPlay()) {
+      updateIsLoading(true);
     }
   };
 
-  const onLoadedMetadata = () => {
-    const media = getMedia();
-    setDuration(media.duration);
-    media.play();
-  };
+  const onLoadedMetadata = () => updateDuration(getMedia().duration);
 
-  const onRateChange = () => setPlaybackRate(getMedia().playbackRate);
+  const onRateChange = () => updatePlaybackRate(getMedia().playbackRate);
 
   const onVolumeChange = () => {
     const media = getMedia();
-    setMuted(media.muted);
-    setVolume(media.volume);
+    updateMuted(media.muted);
+    updateVolume(media.volume);
   };
 
-  const onPause = () => setPaused(true);
+  const onPause = () => updatePaused(true);
 
   const onPlay = () => {
-    setPaused(false);
-    setEnded(false);
+    updatePaused(false);
+    updateEnded(false);
   };
 
-  const onCanPlay = () => setIsLoading(false);
+  const onCanPlay = () => updateIsLoading(false);
 
-  const onEmptied = () => setIsLoading(true);
+  const onEmptied = () => updateIsLoading(true);
 
-  const onWaiting = () => setIsLoading(true);
+  const onWaiting = () => {
+    if (!checkMediaHasDataToPlay()) {
+      updateIsLoading(true);
+    }
+  };
 
-  const onTimeUpdate = () => setCurrentTime(getMedia().currentTime);
+  const onTimeUpdate = () => updateCurrentTime(getMedia().currentTime);
 
-  const onEnded = () => setEnded(true);
+  const onEnded = () => updateEnded(true);
+
+  const setCurrentTime = (newCurrentTime: number) =>
+    (getMedia().currentTime = Math.min(
+      Math.max(newCurrentTime, 0),
+      getMedia().duration
+    ));
+
+  const setPlaybackRate = (newPlaybackRate: number) => {
+    getMedia().playbackRate = newPlaybackRate;
+  };
+
+  const setVolume = (newVolume: number) => (getMedia().volume = newVolume);
+
+  const toggleMuted = () => (getMedia().muted = !getMedia().muted);
+
+  const togglePlay = async () => {
+    const media = getMedia();
+    if (media.paused) {
+      (playPromiseRef.current as any) = media.play();
+    } else {
+      if (playPromiseRef.current) {
+        await playPromiseRef.current;
+        media.pause();
+      }
+    }
+  };
 
   return (
     <MediaContext.Provider
@@ -138,8 +164,8 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         getMedia,
 
         // Streaming properties
-        resolutions,
-        setResolution,
+        levels,
+        setLevel,
 
         // Media properties
         currentTime,
@@ -150,6 +176,13 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         volume,
         ended,
         muted,
+
+        // Media methods
+        setCurrentTime,
+        setPlaybackRate,
+        setVolume,
+        toggleMuted,
+        togglePlay,
 
         mediaEventHandlers: {
           onSeeking,

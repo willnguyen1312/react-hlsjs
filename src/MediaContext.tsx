@@ -22,25 +22,30 @@ interface MediaContextType extends MediaContextProps {
 
 export const MediaContext = React.createContext<MediaContextType | null>(null);
 
-export type Resolutions = number[];
-
 export interface MediaContextProps {
   // Prop Getter for media
   getMedia: () => HTMLVideoElement | HTMLAudioElement;
 
   // Streaming properties
-  resolutions: Resolutions;
-  setResolution: (resolutionIndex: number) => void;
+  levels: Hls.Level[];
+  setLevel: (level?: number) => void;
 
-  // Video Properties
+  // Media Properties
   currentTime: number;
   duration: number;
-  ended: boolean;
-  paused: boolean;
-  playbackRate: number;
   volume: number;
+  playbackRate: number;
+  paused: boolean;
   muted: boolean;
+  ended: boolean;
   isLoading: boolean;
+
+  // Media control methods
+  setCurrentTime: (newCurrentTime: number) => void;
+  setPlaybackRate: (newPlaybackRate: number) => void;
+  setVolume: (newVolume: number) => void;
+  togglePlay: () => void;
+  toggleMuted: () => void;
 }
 
 export const _useMediaContext = () => {

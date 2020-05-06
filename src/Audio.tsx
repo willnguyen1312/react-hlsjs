@@ -4,7 +4,6 @@ import { _useMediaContext } from './MediaContext';
 export const Audio = () => {
   const {
     getMedia,
-
     mediaRef,
     paused,
     playbackRate,
@@ -13,6 +12,8 @@ export const Audio = () => {
     currentTime,
     volume,
     mediaEventHandlers,
+    levels,
+    setLevel,
   } = _useMediaContext();
 
   const togglePlay = () => {
@@ -54,6 +55,14 @@ export const Audio = () => {
       <button onClick={changeVolume}>Change volume</button>
       <p>{isLoading && 'Loading'}</p>
       <p>{`Volume: ${volume}`}</p>
+      <div style={{ display: 'flex' }}>
+        <button onClick={() => setLevel()}>Auto</button>
+        {levels.map((level, index) => (
+          <button key={index} onClick={() => setLevel(index)}>
+            {`${Math.round(level.bitrate / 1024)} kbp`}
+          </button>
+        ))}
+      </div>
       <p>{currentTime}</p>
     </div>
   );

@@ -20,6 +20,7 @@ const audioSrc2 =
 const App = () => {
   const [videoSource, setVideoSource] = React.useState(videoSrc1);
   const [audioSource, setAudioSource] = React.useState(audioSrc1);
+  const [isVideo, setIsVideo] = React.useState(true);
 
   const toggleVideoSource = () => {
     setVideoSource(videoSource === videoSrc1 ? videoSrc2 : videoSrc1);
@@ -31,58 +32,89 @@ const App = () => {
 
   return (
     <div>
-      {/* <button onClick={toggleAudioSource}>Toggle Audio Source</button>
-      <MediaProvider mediaSource={audioSource}>
-        <Audio />
-      </MediaProvider> */}
+      <button style={{ marginBottom: 20 }} onClick={() => setIsVideo(!isVideo)}>
+        {isVideo ? 'Audio' : 'Video'}
+      </button>
+      {!isVideo && (
+        <div>
+          <div style={{ display: 'flex' }}>
+            <button
+              style={{
+                borderColor: (audioSource === audioSrc1 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setAudioSource(audioSrc1)}
+            >
+              audioSrc1
+            </button>
+            <button
+              style={{
+                borderColor: (audioSource === audioSrc2 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setAudioSource(audioSrc2)}
+            >
+              audioSrc2
+            </button>
+          </div>
 
-      <hr />
+          <MediaProvider mediaSource={audioSource}>
+            <Audio />
+          </MediaProvider>
+        </div>
+      )}
 
-      <div style={{ display: 'flex' }}>
-        <button
-          style={{
-            borderColor: (videoSource === videoSrc1 && 'red') || '',
-            cursor: 'pointer',
-            marginRight: 5,
-          }}
-          onClick={() => setVideoSource(videoSrc1)}
-        >
-          videoSrc1
-        </button>
-        <button
-          style={{
-            borderColor: (videoSource === videoSrc2 && 'red') || '',
-            cursor: 'pointer',
-            marginRight: 5,
-          }}
-          onClick={() => setVideoSource(videoSrc2)}
-        >
-          videoSrc2
-        </button>
-        <button
-          style={{
-            borderColor: (videoSource === videoSrc3 && 'red') || '',
-            cursor: 'pointer',
-            marginRight: 5,
-          }}
-          onClick={() => setVideoSource(videoSrc3)}
-        >
-          videoSrc3
-        </button>
-        <button
-          style={{
-            borderColor: (videoSource === videoSrc4 && 'red') || '',
-            cursor: 'pointer',
-            marginRight: 5,
-          }}
-          onClick={() => setVideoSource(videoSrc4)}
-        >
-          videoSrc4
-        </button>
-      </div>
-      <MediaProvider mediaSource={videoSource}>
-        <Video />
-      </MediaProvider>
+      {isVideo && (
+        <>
+          <div style={{ display: 'flex' }}>
+            <button
+              style={{
+                borderColor: (videoSource === videoSrc1 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setVideoSource(videoSrc1)}
+            >
+              videoSrc1
+            </button>
+            <button
+              style={{
+                borderColor: (videoSource === videoSrc2 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setVideoSource(videoSrc2)}
+            >
+              videoSrc2
+            </button>
+            <button
+              style={{
+                borderColor: (videoSource === videoSrc3 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setVideoSource(videoSrc3)}
+            >
+              videoSrc3
+            </button>
+            <button
+              style={{
+                borderColor: (videoSource === videoSrc4 && 'red') || '',
+                cursor: 'pointer',
+                marginRight: 5,
+              }}
+              onClick={() => setVideoSource(videoSrc4)}
+            >
+              videoSrc4
+            </button>
+          </div>
+          <MediaProvider mediaSource={videoSource}>
+            <Video />
+          </MediaProvider>
+        </>
+      )}
     </div>
   );
 };
