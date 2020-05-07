@@ -54,11 +54,11 @@ const App = () => {
 
           <MediaProvider mediaSource={audioSource}>
             <MediaConsumer>
-              {({ getMedia }) => {
+              {({ getMediaStat }) => {
                 return (
                   <Audio
                     onPause={() =>
-                      console.log(`Paused at: ${getMedia().currentTime}`)
+                      console.log(`Paused at: ${getMediaStat().currentTime}`)
                     }
                   />
                 );
@@ -114,10 +114,10 @@ const App = () => {
           </div>
           <MediaProvider mediaSource={videoSource}>
             <MediaConsumer
-              render={({ getMedia }) => (
+              render={({ getMediaStat }) => (
                 <Video
                   onPause={() =>
-                    console.log(`Paused at: ${getMedia().currentTime}`)
+                    console.log(`Paused at: ${getMediaStat().currentTime}`)
                   }
                 />
               )}

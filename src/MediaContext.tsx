@@ -33,11 +33,23 @@ interface MediaContextType extends MediaContextProps {
   _onEnded: () => void;
 }
 
+export interface MediaStat {
+  duration: number;
+  currentTime: number;
+  paused: boolean;
+  ended: boolean;
+  volume: number;
+  playbackRate: number;
+  muted: boolean;
+  mediaWidth: number;
+  mediaHeight: number;
+}
+
 export const MediaContext = React.createContext<MediaContextType | null>(null);
 
 export interface MediaContextProps {
   // Prop Getter for media
-  getMedia: () => HTMLVideoElement | HTMLAudioElement;
+  getMediaStat: () => MediaStat;
 
   // Streaming properties
   levels: Hls.Level[];
@@ -85,7 +97,7 @@ export const useMediaContext = () => {
     isLoading: mediaContext.isLoading,
     levels: mediaContext.levels,
     muted: mediaContext.muted,
-    getMedia: mediaContext.getMedia,
+    getMediaStat: mediaContext.getMediaStat,
     paused: mediaContext.paused,
     volume: mediaContext.volume,
     togglePlay: mediaContext.togglePlay,

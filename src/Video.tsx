@@ -17,7 +17,6 @@ export const Video: FC<MediaProps> = ({
   onWaiting,
 }) => {
   const {
-    getMedia,
     mediaRef,
     paused,
     playbackRate,
@@ -29,6 +28,7 @@ export const Video: FC<MediaProps> = ({
     levels,
     setLevel,
     setCurrentTime,
+    setPlaybackRate,
     togglePlay,
     toggleMuted,
     _onSeeking,
@@ -70,12 +70,7 @@ export const Video: FC<MediaProps> = ({
   );
 
   const changePlaybackRate = () => {
-    const video = getMedia();
-    const currentPlaybackRate = video.playbackRate;
-
-    currentPlaybackRate === 1
-      ? (video.playbackRate = 2)
-      : (video.playbackRate = 1);
+    playbackRate === 1 ? setPlaybackRate(2) : setPlaybackRate(1);
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import Hls from 'hls.js';
-import { MediaContext } from './MediaContext';
+import { MediaContext, MediaStat } from './MediaContext';
 
 interface MediaProviderProps {
   mediaSource: string;
@@ -23,7 +23,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const [muted, updateMuted] = useState(false);
   const [isLoading, updateIsLoading] = useState(true);
 
-  const getMedia = () => {
+  const _getMedia = () => {
     const media = mediaRef.current;
     if (!media) {
       throw new Error('media element is not available');
@@ -31,7 +31,22 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     return media;
   };
 
-  const getHls = () => {
+  const getMediaStat = (): MediaStat => {
+    const media = _getMedia();
+    return {
+      duration: media.duration,
+      currentTime: media.currentTime,
+      paused: media.paused,
+      ended: media.ended,
+      volume: media.volume,
+      playbackRate: media.playbackRate,
+      muted: media.muted,
+      mediaWidth: media instanceof HTMLVideoElement ? media.videoWidth : 0,
+      mediaHeight: media instanceof HTMLVideoElement ? media.videoWidth : 0,
+    };
+  };
+
+  const _getHls = () => {
     const hls = hlsRef.current;
     if (!hls) {
       throw new Error('HLS instance is not available');
@@ -47,7 +62,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   };
 
   useEffect(() => {
-    const media = getMedia();
+    const media = _getMedia();
     releaseHlsResource();
 
     if (Hls.isSupported()) {
@@ -72,12 +87,12 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   }, [mediaSource]);
 
   const setLevel = (level: number = -1) => {
-    const hlsInstance = getHls();
+    const hlsInstance = _getHls();
     hlsInstance.currentLevel = level;
   };
 
   const checkMediaHasDataToPlay = () => {
-    const media = getMedia();
+    const media = _getMedia();
     const currentTime = media.currentTime;
     const timeRanges = Array.from(
       { length: media.buffered.length },
@@ -93,7 +108,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   };
 
   const _onSeeking = () => {
-    const media = getMedia();
+    const media = _getMedia();
     updateCurrentTime(media.currentTime);
     if (!checkMediaHasDataToPlay()) {
       updateIsLoading(true);
@@ -101,18 +116,18 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   };
 
   const _onLoadedMetadata = async () => {
-    while (getMedia().duration === Infinity) {
+    while (_getMedia().duration === Infinity) {
       // Loop until duration is ready
       await new Promise(res => setTimeout(res, 100));
     }
 
-    updateDuration(getMedia().duration);
+    updateDuration(_getMedia().duration);
   };
 
-  const _onRateChange = () => updatePlaybackRate(getMedia().playbackRate);
+  const _onRateChange = () => updatePlaybackRate(_getMedia().playbackRate);
 
   const _onVolumeChange = () => {
-    const media = getMedia();
+    const media = _getMedia();
     updateMuted(media.muted);
     updateVolume(media.volume);
   };
@@ -134,26 +149,26 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const _onTimeUpdate = () => updateCurrentTime(getMedia().currentTime);
+  const _onTimeUpdate = () => updateCurrentTime(_getMedia().currentTime);
 
   const _onEnded = () => updateEnded(true);
 
   const setCurrentTime = (newCurrentTime: number) =>
-    (getMedia().currentTime = Math.min(
+    (_getMedia().currentTime = Math.min(
       Math.max(newCurrentTime, 0),
-      getMedia().duration
+      _getMedia().duration
     ));
 
   const setPlaybackRate = (newPlaybackRate: number) => {
-    getMedia().playbackRate = newPlaybackRate;
+    _getMedia().playbackRate = newPlaybackRate;
   };
 
-  const setVolume = (newVolume: number) => (getMedia().volume = newVolume);
+  const setVolume = (newVolume: number) => (_getMedia().volume = newVolume);
 
-  const toggleMuted = () => (getMedia().muted = !getMedia().muted);
+  const toggleMuted = () => (_getMedia().muted = !_getMedia().muted);
 
   const togglePlay = async () => {
-    const media = getMedia();
+    const media = _getMedia();
     if (media.paused) {
       (playPromiseRef.current as any) = media.play();
     } else {
@@ -171,7 +186,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     <MediaContext.Provider
       value={{
         mediaRef,
-        getMedia,
+        getMediaStat,
 
         // Streaming properties
         levels,

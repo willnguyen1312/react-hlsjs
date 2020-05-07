@@ -16,7 +16,6 @@ export const Audio: FC<MediaProps> = ({
   onWaiting,
 }) => {
   const {
-    getMedia,
     mediaRef,
     paused,
     playbackRate,
@@ -37,27 +36,17 @@ export const Audio: FC<MediaProps> = ({
     _onTimeUpdate,
     _onEmptied,
     _onEnded,
+    togglePlay,
+    setPlaybackRate,
+    setVolume,
   } = _useMediaContext();
 
-  const togglePlay = () => {
-    const video = getMedia();
-    video.paused ? video.play() : video.pause();
-  };
-
   const changePlaybackRate = () => {
-    const video = getMedia();
-    const currentPlaybackRate = video.playbackRate;
-
-    currentPlaybackRate === 1
-      ? (video.playbackRate = 2)
-      : (video.playbackRate = 1);
+    playbackRate === 1 ? setPlaybackRate(2) : setPlaybackRate(1);
   };
 
   const changeVolume = () => {
-    const video = getMedia();
-    const currentVolume = video.volume;
-
-    currentVolume === 1 ? (video.volume = 0) : (video.volume = 1);
+    volume === 1 ? setVolume(0) : setVolume(1);
   };
 
   return (
