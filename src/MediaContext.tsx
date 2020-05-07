@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
 import { Func } from './utils';
 
+type MediaPropsEventListener = Func | Func[];
 export interface MediaProps {
-  onSeeking?: Func;
-  onLoadedMetadata?: Func;
-  onRateChange?: Func;
-  onVolumeChange?: Func;
-  onCanPlay?: Func;
-  onWaiting?: Func;
-  onPause?: Func;
-  onPlay?: Func;
-  onTimeUpdate?: Func;
-  onEmptied?: Func;
-  onEnded?: Func;
+  onSeeking?: MediaPropsEventListener;
+  onLoadedMetadata?: MediaPropsEventListener;
+  onRateChange?: MediaPropsEventListener;
+  onVolumeChange?: MediaPropsEventListener;
+  onCanPlay?: MediaPropsEventListener;
+  onWaiting?: MediaPropsEventListener;
+  onPause?: MediaPropsEventListener;
+  onPlay?: MediaPropsEventListener;
+  onTimeUpdate?: MediaPropsEventListener;
+  onEmptied?: MediaPropsEventListener;
+  onEnded?: MediaPropsEventListener;
 }
 
 interface MediaContextType extends MediaContextProps {

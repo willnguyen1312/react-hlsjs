@@ -42,7 +42,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       playbackRate: media.playbackRate,
       muted: media.muted,
       mediaWidth: media instanceof HTMLVideoElement ? media.videoWidth : 0,
-      mediaHeight: media instanceof HTMLVideoElement ? media.videoWidth : 0,
+      mediaHeight: media instanceof HTMLVideoElement ? media.videoHeight : 0,
     };
   };
 
