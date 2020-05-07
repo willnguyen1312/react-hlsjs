@@ -100,7 +100,14 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const onLoadedMetadata = () => updateDuration(getMedia().duration);
+  const onLoadedMetadata = async () => {
+    while (getMedia().duration === Infinity) {
+      // Loop until duration is ready
+      await new Promise(res => setTimeout(res, 100));
+    }
+
+    updateDuration(getMedia().duration);
+  };
 
   const onRateChange = () => updatePlaybackRate(getMedia().playbackRate);
 

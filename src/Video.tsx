@@ -80,8 +80,8 @@ export const Video = () => {
       <div style={{ display: 'flex' }}>
         <button onClick={() => setLevel()}>Auto</button>
         {levels.map((level, index) => (
-          <button key={level.name} onClick={() => setLevel(index)}>
-            {level.name}
+          <button key={index} onClick={() => setLevel(index)}>
+            {level.height}
           </button>
         ))}
       </div>
