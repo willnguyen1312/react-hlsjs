@@ -17,7 +17,7 @@
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16.13.1"
   },
   "husky": {
     "hooks": {
@@ -47,9 +47,9 @@
     "husky": "^4.2.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "ts-loader": "^7.0.2",
+    "ts-loader": "^7.0.3",
     "tsdx": "^0.13.2",
-    "tslib": "^1.11.1",
+    "tslib": "^1.11.2",
     "typescript": "^3.8.3"
   },
   "dependencies": {
