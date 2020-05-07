@@ -48,7 +48,7 @@ export interface MediaStat {
 export const MediaContext = React.createContext<MediaContextType | null>(null);
 
 export interface MediaContextProps {
-  // Prop Getter for media
+  // Prop Getter for mediaStat
   getMediaStat: () => MediaStat;
 
   // Streaming properties
