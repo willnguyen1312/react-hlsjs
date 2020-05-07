@@ -9,6 +9,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "build:demo": "yarn build && cd example && yarn && yarn build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
