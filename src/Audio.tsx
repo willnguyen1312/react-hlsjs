@@ -1,7 +1,20 @@
-import React from 'react';
-import { _useMediaContext } from './MediaContext';
+import React, { FC } from 'react';
+import { _useMediaContext, MediaProps } from './MediaContext';
+import { callAll } from './utils';
 
-export const Audio = () => {
+export const Audio: FC<MediaProps> = ({
+  onPlay,
+  onCanPlay,
+  onEmptied,
+  onEnded,
+  onLoadedMetadata,
+  onPause,
+  onRateChange,
+  onSeeking,
+  onTimeUpdate,
+  onVolumeChange,
+  onWaiting,
+}) => {
   const {
     getMedia,
     mediaRef,
@@ -11,9 +24,19 @@ export const Audio = () => {
     isLoading,
     currentTime,
     volume,
-    mediaEventHandlers,
     levels,
     setLevel,
+    _onSeeking,
+    _onLoadedMetadata,
+    _onRateChange,
+    _onVolumeChange,
+    _onCanPlay,
+    _onWaiting,
+    _onPause,
+    _onPlay,
+    _onTimeUpdate,
+    _onEmptied,
+    _onEnded,
   } = _useMediaContext();
 
   const togglePlay = () => {
@@ -41,7 +64,17 @@ export const Audio = () => {
     <div>
       <h1 style={{ textAlign: 'center' }}>Hello Audio</h1>
       <audio
-        {...mediaEventHandlers}
+        onSeeking={callAll(_onSeeking, onSeeking)}
+        onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
+        onRateChange={callAll(_onRateChange, onRateChange)}
+        onVolumeChange={callAll(_onVolumeChange, onVolumeChange)}
+        onCanPlay={callAll(_onCanPlay, onCanPlay)}
+        onWaiting={callAll(_onWaiting, onWaiting)}
+        onPause={callAll(_onPause, onPause)}
+        onPlay={callAll(_onPlay, onPlay)}
+        onTimeUpdate={callAll(_onTimeUpdate, onTimeUpdate)}
+        onEmptied={callAll(_onEmptied, onEmptied)}
+        onEnded={callAll(_onEnded, onEnded)}
         controls
         style={{
           width: '100%',

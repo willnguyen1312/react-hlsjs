@@ -92,7 +92,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     });
   };
 
-  const onSeeking = () => {
+  const _onSeeking = () => {
     const media = getMedia();
     updateCurrentTime(media.currentTime);
     if (!checkMediaHasDataToPlay()) {
@@ -100,7 +100,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const onLoadedMetadata = async () => {
+  const _onLoadedMetadata = async () => {
     while (getMedia().duration === Infinity) {
       // Loop until duration is ready
       await new Promise(res => setTimeout(res, 100));
@@ -109,34 +109,34 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     updateDuration(getMedia().duration);
   };
 
-  const onRateChange = () => updatePlaybackRate(getMedia().playbackRate);
+  const _onRateChange = () => updatePlaybackRate(getMedia().playbackRate);
 
-  const onVolumeChange = () => {
+  const _onVolumeChange = () => {
     const media = getMedia();
     updateMuted(media.muted);
     updateVolume(media.volume);
   };
 
-  const onPause = () => updatePaused(true);
+  const _onPause = () => updatePaused(true);
 
-  const onPlay = () => {
+  const _onPlay = () => {
     updatePaused(false);
     updateEnded(false);
   };
 
-  const onCanPlay = () => updateIsLoading(false);
+  const _onCanPlay = () => updateIsLoading(false);
 
-  const onEmptied = () => updateIsLoading(true);
+  const _onEmptied = () => updateIsLoading(true);
 
-  const onWaiting = () => {
+  const _onWaiting = () => {
     if (!checkMediaHasDataToPlay()) {
       updateIsLoading(true);
     }
   };
 
-  const onTimeUpdate = () => updateCurrentTime(getMedia().currentTime);
+  const _onTimeUpdate = () => updateCurrentTime(getMedia().currentTime);
 
-  const onEnded = () => updateEnded(true);
+  const _onEnded = () => updateEnded(true);
 
   const setCurrentTime = (newCurrentTime: number) =>
     (getMedia().currentTime = Math.min(
@@ -194,19 +194,18 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         toggleMuted,
         togglePlay,
 
-        mediaEventHandlers: {
-          onSeeking,
-          onLoadedMetadata,
-          onRateChange,
-          onVolumeChange,
-          onCanPlay,
-          onWaiting,
-          onPause,
-          onPlay,
-          onTimeUpdate,
-          onEmptied,
-          onEnded,
-        },
+        // Media event listeners
+        _onSeeking,
+        _onLoadedMetadata,
+        _onRateChange,
+        _onVolumeChange,
+        _onCanPlay,
+        _onWaiting,
+        _onPause,
+        _onPlay,
+        _onTimeUpdate,
+        _onEmptied,
+        _onEnded,
       }}
     >
       {children}

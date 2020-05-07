@@ -1,11 +1,23 @@
-import React, { useCallback } from 'react';
-import { _useMediaContext } from './MediaContext';
+import React, { useCallback, FC } from 'react';
+import { _useMediaContext, MediaProps } from './MediaContext';
 import { useEventListener } from './hooks/useEventListener';
+import { callAll } from './utils';
 
-export const Video = () => {
+export const Video: FC<MediaProps> = ({
+  onPlay,
+  onCanPlay,
+  onEmptied,
+  onEnded,
+  onLoadedMetadata,
+  onPause,
+  onRateChange,
+  onSeeking,
+  onTimeUpdate,
+  onVolumeChange,
+  onWaiting,
+}) => {
   const {
     getMedia,
-    mediaEventHandlers,
     mediaRef,
     paused,
     playbackRate,
@@ -19,6 +31,17 @@ export const Video = () => {
     setCurrentTime,
     togglePlay,
     toggleMuted,
+    _onSeeking,
+    _onLoadedMetadata,
+    _onRateChange,
+    _onVolumeChange,
+    _onCanPlay,
+    _onWaiting,
+    _onPause,
+    _onPlay,
+    _onTimeUpdate,
+    _onEmptied,
+    _onEnded,
   } = _useMediaContext();
 
   // Add event listener using our hook
@@ -59,7 +82,17 @@ export const Video = () => {
     <div>
       <h1>Hello Video</h1>
       <video
-        {...mediaEventHandlers}
+        onSeeking={callAll(_onSeeking, onSeeking)}
+        onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
+        onRateChange={callAll(_onRateChange, onRateChange)}
+        onVolumeChange={callAll(_onVolumeChange, onVolumeChange)}
+        onCanPlay={callAll(_onCanPlay, onCanPlay)}
+        onWaiting={callAll(_onWaiting, onWaiting)}
+        onPause={callAll(_onPause, onPause)}
+        onPlay={callAll(_onPlay, onPlay)}
+        onTimeUpdate={callAll(_onTimeUpdate, onTimeUpdate)}
+        onEmptied={callAll(_onEmptied, onEmptied)}
+        onEnded={callAll(_onEnded, onEnded)}
         controls
         style={{
           margin: 'left',

@@ -1,7 +1,7 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Audio, Video, MediaProvider } from '../.';
+import { Audio, Video, MediaProvider, MediaConsumer } from '../.';
 
 const videoSrc1 = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
 const videoSrc2 =
@@ -21,14 +21,6 @@ const App = () => {
   const [videoSource, setVideoSource] = React.useState(videoSrc1);
   const [audioSource, setAudioSource] = React.useState(audioSrc1);
   const [isVideo, setIsVideo] = React.useState(true);
-
-  const toggleVideoSource = () => {
-    setVideoSource(videoSource === videoSrc1 ? videoSrc2 : videoSrc1);
-  };
-
-  const toggleAudioSource = () => {
-    setAudioSource(audioSource === audioSrc1 ? audioSrc2 : audioSrc1);
-  };
 
   return (
     <div>
@@ -61,7 +53,17 @@ const App = () => {
           </div>
 
           <MediaProvider mediaSource={audioSource}>
-            <Audio />
+            <MediaConsumer>
+              {({ getMedia }) => {
+                return (
+                  <Audio
+                    onPause={() =>
+                      console.log(`Paused at: ${getMedia().currentTime}`)
+                    }
+                  />
+                );
+              }}
+            </MediaConsumer>
           </MediaProvider>
         </div>
       )}
@@ -111,7 +113,15 @@ const App = () => {
             </button>
           </div>
           <MediaProvider mediaSource={videoSource}>
-            <Video />
+            <MediaConsumer
+              render={({ getMedia }) => (
+                <Video
+                  onPause={() =>
+                    console.log(`Paused at: ${getMedia().currentTime}`)
+                  }
+                />
+              )}
+            />
           </MediaProvider>
         </>
       )}

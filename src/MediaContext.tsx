@@ -1,23 +1,36 @@
 import React, { useContext } from 'react';
+import { Func } from './utils';
+
+export interface MediaProps {
+  onSeeking?: Func;
+  onLoadedMetadata?: Func;
+  onRateChange?: Func;
+  onVolumeChange?: Func;
+  onCanPlay?: Func;
+  onWaiting?: Func;
+  onPause?: Func;
+  onPlay?: Func;
+  onTimeUpdate?: Func;
+  onEmptied?: Func;
+  onEnded?: Func;
+}
 
 interface MediaContextType extends MediaContextProps {
   // Ref to attach on media
   mediaRef: React.RefObject<HTMLVideoElement | HTMLAudioElement>;
 
   // Event Handler
-  mediaEventHandlers: {
-    onSeeking: () => void;
-    onLoadedMetadata: () => void;
-    onRateChange: () => void;
-    onVolumeChange: () => void;
-    onCanPlay: () => void;
-    onWaiting: () => void;
-    onPause: () => void;
-    onPlay: () => void;
-    onTimeUpdate: () => void;
-    onEmptied: () => void;
-    onEnded: () => void;
-  };
+  _onSeeking: () => void;
+  _onLoadedMetadata: () => void;
+  _onRateChange: () => void;
+  _onVolumeChange: () => void;
+  _onCanPlay: () => void;
+  _onWaiting: () => void;
+  _onPause: () => void;
+  _onPlay: () => void;
+  _onTimeUpdate: () => void;
+  _onEmptied: () => void;
+  _onEnded: () => void;
 }
 
 export const MediaContext = React.createContext<MediaContextType | null>(null);
@@ -65,9 +78,24 @@ export const useMediaContext = () => {
     throw new Error('Please place inside MediaContext');
   }
 
-  const { mediaEventHandlers, mediaRef, ...rest } = mediaContext;
-
-  return rest;
+  return {
+    currentTime: mediaContext.currentTime,
+    duration: mediaContext.duration,
+    ended: mediaContext.ended,
+    isLoading: mediaContext.isLoading,
+    levels: mediaContext.levels,
+    muted: mediaContext.muted,
+    getMedia: mediaContext.getMedia,
+    paused: mediaContext.paused,
+    volume: mediaContext.volume,
+    togglePlay: mediaContext.togglePlay,
+    toggleMuted: mediaContext.toggleMuted,
+    setCurrentTime: mediaContext.setCurrentTime,
+    setLevel: mediaContext.setLevel,
+    setPlaybackRate: mediaContext.setPlaybackRate,
+    setVolume: mediaContext.setVolume,
+    playbackRate: mediaContext.playbackRate,
+  };
 };
 
 export const withMediaContext = <P extends { mediaContext: MediaContextProps }>(
@@ -93,7 +121,7 @@ interface MediaContextConsumerProps {
   render?: (mediaContext: MediaContextProps) => React.ReactNode;
 }
 
-export const MediaContextConsumer: React.FC<MediaContextConsumerProps> = ({
+export const MediaConsumer: React.FC<MediaContextConsumerProps> = ({
   children,
   render,
 }) => {
@@ -108,15 +136,15 @@ export const MediaContextConsumer: React.FC<MediaContextConsumerProps> = ({
 };
 
 const LET = () => (
-  <MediaContextConsumer>
+  <MediaConsumer>
     {({ currentTime }) => {
       return currentTime;
     }}
-  </MediaContextConsumer>
+  </MediaConsumer>
 );
 
 const LET2 = () => (
-  <MediaContextConsumer
+  <MediaConsumer
     render={({ currentTime }) => {
       return currentTime;
     }}
