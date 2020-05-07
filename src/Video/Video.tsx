@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
-import { _useMediaContext, MediaProps } from './MediaContext';
-import { callAll } from './utils';
+import React, { useCallback, FC } from 'react';
+import { _useMediaContext, MediaProps } from '../MediaContext';
+import { useEventListener } from '../hooks/useEventListener';
+import { callAll } from '../utils';
 
-export const Audio: FC<MediaProps> = ({
+export const Video: FC<MediaProps> = ({
   onPlay,
   onCanPlay,
   onEmptied,
@@ -23,8 +24,13 @@ export const Audio: FC<MediaProps> = ({
     isLoading,
     currentTime,
     volume,
+    muted,
     levels,
     setLevel,
+    setCurrentTime,
+    setPlaybackRate,
+    togglePlay,
+    toggleMuted,
     _onSeeking,
     _onLoadedMetadata,
     _onRateChange,
@@ -36,23 +42,41 @@ export const Audio: FC<MediaProps> = ({
     _onTimeUpdate,
     _onEmptied,
     _onEnded,
-    togglePlay,
-    setPlaybackRate,
-    setVolume,
   } = _useMediaContext();
+
+  // Add event listener using our hook
+  useEventListener(
+    'keypress',
+    useCallback(
+      ({ key }) => {
+        if (key === 'n') {
+          setCurrentTime(currentTime + 3);
+        }
+
+        if (key === 'p') {
+          setCurrentTime(currentTime - 3);
+        }
+
+        if (key === 's') {
+          togglePlay();
+        }
+
+        if (key === 'm') {
+          toggleMuted();
+        }
+      },
+      [setCurrentTime]
+    )
+  );
 
   const changePlaybackRate = () => {
     playbackRate === 1 ? setPlaybackRate(2) : setPlaybackRate(1);
   };
 
-  const changeVolume = () => {
-    volume === 1 ? setVolume(0) : setVolume(1);
-  };
-
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>Hello Audio</h1>
-      <audio
+      <h1>Hello Video</h1>
+      <video
         onSeeking={callAll(_onSeeking, onSeeking)}
         onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
         onRateChange={callAll(_onRateChange, onRateChange)}
@@ -66,26 +90,38 @@ export const Audio: FC<MediaProps> = ({
         onEnded={callAll(_onEnded, onEnded)}
         controls
         style={{
-          width: '100%',
+          margin: 'left',
+          height: 400,
+          display: 'block',
         }}
-        ref={mediaRef as React.RefObject<HTMLAudioElement>}
+        ref={mediaRef as React.RefObject<HTMLVideoElement>}
       />
       <button onClick={togglePlay}>{paused ? 'Play' : 'Pause'}</button>
+      <button onClick={changePlaybackRate}>Change playbackRate</button>
+      <button onClick={toggleMuted}>Toggle muted</button>
       <p>{`PlaybackRate: ${playbackRate}`}</p>
       <p>{!!duration && `Duration ${duration}`}</p>
-      <button onClick={changePlaybackRate}>Change playbackRate</button>
-      <button onClick={changeVolume}>Change volume</button>
-      <p>{isLoading && 'Loading'}</p>
       <p>{`Volume: ${volume}`}</p>
+      <p>{`Muted: ${muted}`}</p>
+      <p>{`Current time: ${currentTime}`}</p>
+      <p>Resolution</p>
       <div style={{ display: 'flex' }}>
         <button onClick={() => setLevel()}>Auto</button>
         {levels.map((level, index) => (
           <button key={index} onClick={() => setLevel(index)}>
-            {`${Math.round(level.bitrate / 1024)} kbp`}
+            {level.height}
           </button>
         ))}
       </div>
-      <p>{currentTime}</p>
+      <div style={{ display: 'flex' }}>
+        <button onClick={() => setCurrentTime(currentTime - 3)}>
+          Prev 3 secconds
+        </button>
+        <button onClick={() => setCurrentTime(currentTime + 3)}>
+          Next 3 secconds
+        </button>
+      </div>
+      <p>{isLoading && 'Loading'}</p>
     </div>
   );
 };
