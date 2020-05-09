@@ -1,11 +1,19 @@
 import React from 'react';
-import { Audio } from '..';
+import { Video, MediaProvider, MediaConsumer } from '../src';
 
 export default {
   title: 'Welcome',
 };
 
-export const toStorybook = () => <Audio />;
+const videoSource = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+
+const BasicVideo = (
+  <MediaProvider mediaSource={videoSource}>
+    <MediaConsumer render={() => <Video />} />
+  </MediaProvider>
+);
+
+export const toStorybook = () => BasicVideo;
 
 toStorybook.story = {
   name: 'to Storybook',
