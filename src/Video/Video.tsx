@@ -42,6 +42,7 @@ export const Video: FC<MediaProps> = ({
     _onTimeUpdate,
     _onEmptied,
     _onEnded,
+    buffered,
   } = _useMediaContext();
 
   // Add event listener using our hook
@@ -121,6 +122,19 @@ export const Video: FC<MediaProps> = ({
           Next 3 secconds
         </button>
       </div>
+      <p>Buffered Ranges:</p>
+      {buffered &&
+        buffered.length > 0 &&
+        (() => {
+          const timeRanges = Array.from(
+            { length: buffered.length },
+            (_, index) => {
+              return [buffered.start(index), buffered.end(index)];
+            }
+          );
+
+          return timeRanges.map(timeRange => JSON.stringify(timeRange));
+        })()}
       <p>{isLoading && 'Loading'}</p>
     </div>
   );

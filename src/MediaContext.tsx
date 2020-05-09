@@ -65,6 +65,7 @@ export interface MediaContextProps {
   muted: boolean;
   ended: boolean;
   isLoading: boolean;
+  buffered: TimeRanges | null;
 
   // Media control methods
   setCurrentTime: (newCurrentTime: number) => void;
@@ -78,18 +79,14 @@ export const _useMediaContext = () => {
   const mediaContext = useContext(MediaContext);
 
   if (!mediaContext) {
-    throw new Error('Please place inside MediaContext');
+    throw new Error('Please place the component inside MediaContext');
   }
 
   return mediaContext;
 };
 
-export const useMediaContext = () => {
-  const mediaContext = useContext(MediaContext);
-
-  if (!mediaContext) {
-    throw new Error('Please place inside MediaContext');
-  }
+export const useMediaContext = (): MediaContextProps => {
+  const mediaContext = _useMediaContext();
 
   return {
     currentTime: mediaContext.currentTime,
@@ -108,6 +105,7 @@ export const useMediaContext = () => {
     setPlaybackRate: mediaContext.setPlaybackRate,
     setVolume: mediaContext.setVolume,
     playbackRate: mediaContext.playbackRate,
+    buffered: mediaContext.buffered,
   };
 };
 

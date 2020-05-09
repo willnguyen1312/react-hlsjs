@@ -14,6 +14,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   const hlsRef = useRef<Hls>(null);
   const [levels, updateLevels] = useState<Hls.Level[]>([]);
+  const [buffered, updateBuffered] = useState<TimeRanges | null>(null);
   const [currentTime, updateCurrentTime] = useState(0);
   const [duration, updateDuration] = useState(0);
   const [ended, updateEnded] = useState(false);
@@ -70,6 +71,10 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       newHls.attachMedia(media as HTMLVideoElement);
       newHls.on(Hls.Events.MEDIA_ATTACHED, () => {
         newHls.loadSource(mediaSource);
+      });
+
+      newHls.on(Hls.Events.FRAG_BUFFERED, () => {
+        updateBuffered(_getMedia().buffered);
       });
 
       newHls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
@@ -201,6 +206,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         volume,
         ended,
         muted,
+        buffered,
 
         // Media methods
         setCurrentTime,
