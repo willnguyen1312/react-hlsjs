@@ -1,7 +1,11 @@
-export type Func = () => void;
-export const callAll = (...fns: (Func | Func[] | undefined)[]) => () => {
+export type Func = (
+  event: React.SyntheticEvent<HTMLVideoElement | HTMLAudioElement, Event>
+) => void;
+export const callAll = (...fns: (Func | Func[] | undefined)[]) => (
+  event: React.SyntheticEvent<HTMLVideoElement | HTMLAudioElement, Event>
+) => {
   const flatFns = flattenArr(fns) as (Func | undefined)[];
-  flatFns.forEach(fn => fn && fn());
+  flatFns.forEach(fn => fn && fn(event));
 };
 
 const flattenArr = (arr: any[]) =>

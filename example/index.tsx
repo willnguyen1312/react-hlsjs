@@ -116,14 +116,12 @@ const App = () => {
             <MediaConsumer
               render={({ getMediaStat }) => (
                 <Video
-                  onPause={[
+                  onPause={[event => console.log(event.timeStamp)]}
+                  onPlay={[
                     () =>
                       console.log(`Paused at: ${getMediaStat().currentTime}`),
-                    () =>
-                      console.log(`MediaWidth: ${getMediaStat().mediaWidth}`),
-                    () =>
-                      console.log(`MediaHeight: ${getMediaStat().mediaHeight}`),
                   ]}
+                  onVolumeChange={() => console.log('Volume changed')}
                 />
               )}
             />
