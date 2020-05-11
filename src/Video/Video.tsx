@@ -43,6 +43,7 @@ export const Video: FC<MediaProps> = ({
     _onEmptied,
     _onEnded,
     buffered,
+    fps,
   } = _useMediaContext();
 
   // Add event listener using our hook
@@ -76,7 +77,7 @@ export const Video: FC<MediaProps> = ({
 
   return (
     <div>
-      <h1>Hello Video</h1>
+      <h1>{`Hello Video ${isLoading ? 'Loading' : ''}`}</h1>
       <video
         onSeeking={callAll(_onSeeking, onSeeking)}
         onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
@@ -135,7 +136,7 @@ export const Video: FC<MediaProps> = ({
 
           return timeRanges.map(timeRange => JSON.stringify(timeRange));
         })()}
-      <p>{isLoading && 'Loading'}</p>
+      {fps !== 0 && <p>{`Fps: ${fps}`}</p>}
     </div>
   );
 };

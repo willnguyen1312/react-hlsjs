@@ -10,7 +10,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   children,
   mediaSource,
 }) => {
-  const playPromiseRef = useRef<Promise<void>>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   const hlsRef = useRef<Hls>(null);
   const [levels, updateLevels] = useState<Hls.Level[]>([]);
@@ -23,6 +23,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const [volume, updateVolume] = useState(1);
   const [muted, updateMuted] = useState(false);
   const [isLoading, updateIsLoading] = useState(true);
+  const [fps, setFps] = useState(0);
 
   const _getMedia = () => {
     const media = mediaRef.current;
@@ -75,6 +76,19 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
       newHls.on(Hls.Events.FRAG_BUFFERED, () => {
         updateBuffered(_getMedia().buffered);
+      });
+
+      newHls.on(Hls.Events.FRAG_CHANGED, () => {
+        if (checkMediaHasDataToPlay()) {
+          updateIsLoading(false);
+        }
+      });
+
+      newHls.on(Hls.Events.FRAG_PARSING_DATA, (_, data) => {
+        if (data.type === 'video') {
+          const fps = data.nb / (data.endPTS - data.startPTS);
+          setFps(Math.round(fps));
+        }
       });
 
       newHls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
@@ -180,6 +194,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       if (playPromiseRef.current) {
         await playPromiseRef.current;
         media.pause();
+        playPromiseRef.current = null;
       } else {
         // For IE's weirdness
         media.pause();
@@ -192,6 +207,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       value={{
         mediaRef,
         getMediaStat,
+        fps,
 
         // Streaming properties
         levels,

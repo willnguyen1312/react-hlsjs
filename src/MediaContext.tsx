@@ -53,6 +53,7 @@ export interface MediaContextProps {
   getMediaStat: () => MediaStat;
 
   // Streaming properties
+  fps: number;
   levels: Hls.Level[];
   setLevel: (level?: number) => void;
 
@@ -106,6 +107,7 @@ export const useMediaContext = (): MediaContextProps => {
     setVolume: mediaContext.setVolume,
     playbackRate: mediaContext.playbackRate,
     buffered: mediaContext.buffered,
+    fps: mediaContext.fps,
   };
 };
 
