@@ -1,9 +1,9 @@
-export const queryElement = <K extends keyof HTMLElementTagNameMap>(
+export const getElement = <K extends keyof HTMLElementTagNameMap>(
   container: HTMLElement,
-  elemnt: K
+  element: K
 ): HTMLElementTagNameMap[K] => {
-  const result = container.querySelector(elemnt);
-  if (!result) throw new Error(`${elemnt} is not available`);
+  const result = container.querySelector(element);
+  if (!result) throw new Error(`${element} is not available`);
 
   return result;
 };
