@@ -78,12 +78,6 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         updateBuffered(_getMedia().buffered);
       });
 
-      newHls.on(Hls.Events.FRAG_CHANGED, () => {
-        if (checkMediaHasDataToPlay()) {
-          updateIsLoading(false);
-        }
-      });
-
       newHls.on(Hls.Events.FRAG_PARSING_DATA, (_, data) => {
         if (data.type === 'video') {
           const fps = data.nb / (data.endPTS - data.startPTS);
@@ -202,12 +196,15 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
+  const _onProgress = () => updateIsLoading(false);
+
   return (
     <MediaContext.Provider
       value={{
         mediaRef,
         getMediaStat,
         fps,
+        _onProgress,
 
         // Streaming properties
         levels,

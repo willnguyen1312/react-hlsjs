@@ -22,6 +22,7 @@ interface MediaContextType extends MediaContextProps {
 
   // Event Handler
   _onSeeking: () => void;
+  _onProgress: () => void;
   _onLoadedMetadata: () => void;
   _onRateChange: () => void;
   _onVolumeChange: () => void;
