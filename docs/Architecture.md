@@ -18,7 +18,7 @@ The core design architecture is very simple:
    - All action are split into two categories: Media and Streaming. These are taken care of by MediaElement and HLS.js instances accordingly
    - One way direction flow: All update happens via Media and Streaming controllers. Event listeners are registered for updating React's state properly and re-rendering the UI
 
-![New Media Player](https://git.taservs.net/storage/user/456/files/90e43600-9532-11ea-945c-176a4b44861f)
+![New Media Player](https://user-images.githubusercontent.com/17794897/82113586-591efd80-9781-11ea-8f4b-b84174592a4a.png)
 
 ## Code structure
 
