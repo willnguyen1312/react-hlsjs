@@ -32,7 +32,7 @@
     "trailingComma": "es5"
   },
   "name": "react-hlsjs",
-  "author": "Nam Nguyen",
+  "author": "Nam Nguyen <nam.nguyen.node@gmail.com>",
   "module": "dist/react-hlsjs.esm.js",
   "devDependencies": {
     "@babel/core": "^7.9.6",
