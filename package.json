@@ -18,6 +18,11 @@
     "storybook": "start-storybook -p 9009",
     "build-storybook": "build-storybook"
   },
+  "keywords": [
+    "hlsjs",
+    "react",
+    "react-hlsjs"
+  ],
   "peerDependencies": {
     "react": ">=16.13.1"
   },
