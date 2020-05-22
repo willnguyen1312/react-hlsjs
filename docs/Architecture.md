@@ -13,7 +13,7 @@ Please make sure you get a good grasp of the following technologies before readi
 
 The core design architecture is very simple:
 
-   - Main components are taking of binding React, MSE and MediaElements
+   - Main components are taking care of binding React, MSE and MediaElements
    - Consumable props are exposed for extensibility
    - All action are split into two categories: Media and Streaming. These are taken care of by MediaElement and HLS.js instances accordingly
    - One way direction flow: All update happens via Media and Streaming controllers. Event listeners are registered for updating React's state properly and re-rendering the UI
