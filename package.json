@@ -7,6 +7,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willnguyen1312/react-hlsjs"
+  },
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
