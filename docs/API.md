@@ -16,21 +16,21 @@
     - [muted](#muted)
     - [ended](#ended)
     - [buffered](#buffered)
-    - [isLoading](#isloading)
-    - [rotate](#rotate)
+    - [error](#error)
+    - [loading](#loading)
+    - [rotateDegree](#rotatedegree)
     - [setCurrentBitrateIndex](#setcurrentbitrateindex)
     - [setCurrentTime](#setcurrenttime)
     - [setPlaybackRate](#setplaybackrate)
     - [setVolume](#setvolume)
     - [setPaused](#setpaused)
     - [setMuted](#setmuted)
-    - [setRotate](#setrotate)
+    - [setRotateDegree](#setrotatedegree)
 - [MediaContext consumable ways](#mediacontext-consumable-ways)
     - [Render Prop](#render-prop)
     - [HOC](#hoc)
     - [Custom hook](#custom-hook)
-
-
+- [ErrorDetails](#errordetails)
 ## Getting started
 
 Note: MediaProvder must be the wrapper so that all connected components can work in harmony. There must be only one kind of media element rendered inside MediaProvder (Video or Audio components). Under the hood, @axon/next-media leverages the [React Context API]
@@ -105,7 +105,6 @@ const CustomAudioPlayer = (
 )
 ```
 
-
 ## MediaContext
 
 #### mediaElement
@@ -139,63 +138,60 @@ All available bitrates from current streaming service
 
 Indicate currentBirateIndex from the [bitrates](#bitrates)
 
-#### currentTime
+#### [currentTime](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentTime)
 (number)
 
 Current time of the media element
 
-#### duration
+#### [duration](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/duration)
 (number)
 
 Duration of the media element
 
-#### volume
+#### [volume](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volume)
 (number)
 
 Volume of the media element
 
-#### playbackRate
+#### [playbackRate](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playbackRate)
 (number)
 
 PlaybackRate of the media element
 
-#### paused
-(number)
+#### [paused](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/paused)
+(boolean)
 
 Indicate paused state of the media element
 
-#### muted
-(number)
+#### [muted](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/muted)
+(boolean)
 
 Indicate muted state of the media element
 
-#### ended
-(number)
+#### [ended](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended)
+(boolean)
 
 Indicate ended state of the media element
 
-#### buffered
-([TimeRanges])
+#### [buffered](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/buffered)
+[TimeRanges](https://developer.mozilla.org/en-US/docs/Web/API/TimeRanges)
 
 Buffered of the media element
 
-#### isLoading
+#### error
+(value: null | [ErrorDetails](#ErrorDetails))
+
+Media error detail object
+
+#### loading
 (boolean)
 
 Indicate whether media has data to play at the current time
 
-#### rotate
-(number: 0 | 1 | 2 | 3)
+#### rotateDegree
+(number: 0 | 90 | 180 | 270)
 
-Current rotation of the video
-
-0: 0 degrees
-
-1: 90 degrees
-
-2: 180 degrees
-
-3: 270 degrees
+Current rotation degree of the video
 
 #### setCurrentBitrateIndex
 (value: number) => void
@@ -232,29 +228,29 @@ Set paused state of the media element
 
 Set muted state of the media element
 
-#### setRotate
+#### setRotateDegree
 (value: number) => void
 
-Set rotation of the video
+Set rotation degree of the video
 
 ## MediaContext consumable ways
 @axon/next-media expose three styles for client applcations to consume mediaContext located inside
 
 
 #### Render Prop
-```
+```tsx
 import { MediaConsumer } from '@axon/next-media'
 
 <MediaConsumer render={({ fps }) => <p>FPS: ${fps} </p>} />
 ```
 #### HOC
-```
+```tsx
 import { withMediaContext } from '@axon/next-media'
 
 const connectedMediaComponent = withMediaContext(Component)
 ```
 #### Custom hook
-```
+```tsx
 const Component = () => {
   const { autoBitrateEnabled } = useMediaContext()
 
@@ -262,6 +258,9 @@ const Component = () => {
 }
 ```
 
+## ErrorDetails
+
+- type: NETWORK_ERROR | MSE_ERROR
 
 [React Context API]: https://reactjs.org/docs/context.html
 [TimeRanges]: https://developer.mozilla.org/en-US/docs/Web/API/TimeRanges
