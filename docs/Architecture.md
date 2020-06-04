@@ -30,13 +30,10 @@ The core design architecture is very simple:
     - MediaContext is responsible for creating the React's Context and provide custom methods for consuming mediaContext
   - [src/MediaProvider.tsx]
     - MediaProvider is responsible for initiate the mediaContext's value and manage update during lifetime of the application. Any properties prefixed with udnerscore "_" are private
-  - [src/types.ts]
-    - Type definitions
   - [src/utils.ts]
     - Utility functions
 
 
-[src/types.ts]: ../src/types.ts
 [src/utils.ts]: ../src/utils.ts
 [src/MediaProvider.tsx]: ../src/MediaProvider.tsx
 [src/MediaContext.tsx]: ../src/MediaContext.tsx
