@@ -38,7 +38,7 @@ Note: MediaProvder must be the wrapper so that all connected components can work
 ### First step: setup
 Import MediaProvder and related media components in your applcation
 
-```
+```tsx
 import { MediaProvider, Video, Audio } from '@axon/next-media'
 
 const VideoPlayer = (
@@ -57,7 +57,7 @@ const AudioPlayer = (
 ### Second step: add controllers
 Import related controller commponents into your applcation
 
-```
+```tsx
 import {
   MediaProvider,
   Videoe,
@@ -81,7 +81,7 @@ const VideoPlayer = (
 ### Thid step: customization
 @axon/next-media place zero constraints on how things work across applications. The volume control, dimensions of media elements and positioning need to be done by consuming applcations
 
-```
+```tsx
 const CustomAudioPlayer = (
   <MediaProvider mediaSource={audioSource}>
     <Audio />
