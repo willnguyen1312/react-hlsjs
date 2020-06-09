@@ -1,10 +1,15 @@
-import React, { useEffect, useRef, useState, FC } from 'react';
+import React, { useEffect, useRef, useState, FC, useCallback } from 'react';
 import Hls from 'hls.js';
 import { MediaContext, MediaStat } from './MediaContext';
+import useInterval from './hooks/useSetInterval';
 
 interface MediaProviderProps {
   mediaSource: string;
 }
+
+let currentPlayPos = 0;
+let bufferingOnPlay = false;
+let lastPlayPos = 0;
 
 export const MediaProvider: FC<MediaProviderProps> = ({
   children,
@@ -62,6 +67,41 @@ export const MediaProvider: FC<MediaProviderProps> = ({
       hls.destroy();
     }
   };
+
+  const checkLoading = useCallback(() => {
+    try {
+      const media = _getMedia();
+      const paused = media.paused;
+      const seeking = media.seeking;
+      currentPlayPos = media.currentTime;
+
+      if (
+        !bufferingOnPlay &&
+        currentPlayPos === lastPlayPos &&
+        !paused &&
+        !seeking
+      ) {
+        bufferingOnPlay = true;
+        console.log('bufferingOnPlay: true');
+        updateIsLoading(true);
+      }
+
+      if (
+        bufferingOnPlay &&
+        currentPlayPos > lastPlayPos &&
+        !paused &&
+        !seeking
+      ) {
+        bufferingOnPlay = false;
+        console.log('bufferingOnPlay: false');
+        updateIsLoading(false);
+      }
+
+      lastPlayPos = currentPlayPos;
+    } catch (_) {}
+  }, []);
+
+  useInterval(checkLoading, 50);
 
   useEffect(() => {
     const media = _getMedia();
@@ -123,9 +163,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const _onSeeking = () => {
     const media = _getMedia();
     updateCurrentTime(media.currentTime);
-    if (!checkMediaHasDataToPlay()) {
-      updateIsLoading(true);
-    }
+    updateIsLoading(!checkMediaHasDataToPlay());
   };
 
   const _onLoadedMetadata = async () => {
@@ -152,15 +190,11 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     updateEnded(false);
   };
 
-  const _onCanPlay = () => updateIsLoading(false);
+  const _onCanPlay = () => updateIsLoading(!checkMediaHasDataToPlay());
 
-  const _onEmptied = () => updateIsLoading(true);
+  const _onEmptied = () => updateIsLoading(!checkMediaHasDataToPlay());
 
-  const _onWaiting = () => {
-    if (!checkMediaHasDataToPlay()) {
-      updateIsLoading(true);
-    }
-  };
+  const _onWaiting = () => updateIsLoading(!checkMediaHasDataToPlay());
 
   const _onTimeUpdate = () => updateCurrentTime(_getMedia().currentTime);
 
@@ -196,7 +230,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     }
   };
 
-  const _onProgress = () => updateIsLoading(false);
+  const _onProgress = () => updateIsLoading(!checkMediaHasDataToPlay());
 
   return (
     <MediaContext.Provider

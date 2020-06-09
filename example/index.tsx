@@ -18,7 +18,7 @@ const audioSrc2 =
   'https://s3.amazonaws.com/qa.jwplayer.com/~alex/121628/new_master.m3u8';
 
 const App = () => {
-  const [videoSource, setVideoSource] = React.useState(videoSrc1);
+  const [videoSource, setVideoSource] = React.useState(videoSrc3);
   const [audioSource, setAudioSource] = React.useState(audioSrc1);
   const [isVideo, setIsVideo] = React.useState(true);
 
@@ -116,11 +116,11 @@ const App = () => {
             <MediaConsumer
               render={({ getMediaStat }) => (
                 <Video
-                  onPause={[
-                    () =>
-                      console.log(`Paused at: ${getMediaStat().currentTime}`),
-                  ]}
-                  onVolumeChange={() => console.log('Volume changed')}
+                // onPause={[
+                //   () =>
+                //     console.log(`Paused at: ${getMediaStat().currentTime}`),
+                // ]}
+                // onVolumeChange={() => console.log('Volume changed')}
                 />
               )}
             />
