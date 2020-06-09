@@ -1,4 +1,4 @@
-import React, { useCallback, FC } from 'react';
+import React, { useCallback, FC, useEffect } from 'react';
 import { _useMediaContext, MediaProps } from '../MediaContext';
 import { useEventListener } from '../hooks/useEventListener';
 import { callAll } from '../utils';
@@ -76,12 +76,60 @@ export const Video: FC<MediaProps> = ({
     playbackRate === 1 ? setPlaybackRate(2) : setPlaybackRate(1);
   };
 
+  useEffect(() => {
+    var checkInterval = 50.0; // check every 50 ms (do not use lower values)
+    var lastPlayPos = 0;
+    var lastDiff = 0;
+    var currentPlayPos = 0;
+    var bufferingDetected = false;
+    var player = mediaRef.current as HTMLVideoElement;
+
+    setInterval(checkBuffering, checkInterval);
+    function checkBuffering() {
+      currentPlayPos = player.currentTime;
+
+      var newDiff = currentPlayPos - lastPlayPos;
+
+      if (lastDiff !== newDiff) {
+        console.log(lastDiff);
+        lastDiff = newDiff;
+      }
+
+      // if no buffering is currently detected,
+      // and the position does not seem to increase
+      // and the player isn't manually paused...
+      if (
+        !bufferingDetected &&
+        currentPlayPos <= lastPlayPos &&
+        !player.paused
+      ) {
+        console.log('buffering');
+        bufferingDetected = true;
+      }
+
+      // if we were buffering but the player has advanced,
+      // then there is no buffering
+      if (bufferingDetected && currentPlayPos > lastPlayPos && !player.paused) {
+        console.log('not buffering anymore');
+        bufferingDetected = false;
+      }
+      lastPlayPos = currentPlayPos;
+    }
+  }, []);
+
   return (
     <div>
       <h1>{`Hello Video ${isLoading ? 'Loading' : ''}`}</h1>
       <video
-        onProgress={_onProgress}
-        onSeeking={callAll(_onSeeking, onSeeking)}
+        onProgress={() => {
+          // console.log("On Progress")
+          _onProgress();
+        }}
+        onSeeking={event => {
+          callAll(_onSeeking, onSeeking);
+          // console.log('seeking');
+          console.log((event.target as HTMLVideoElement).currentTime);
+        }}
         onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
         onRateChange={callAll(_onRateChange, onRateChange)}
         onVolumeChange={callAll(_onVolumeChange, onVolumeChange)}
@@ -89,9 +137,15 @@ export const Video: FC<MediaProps> = ({
         onWaiting={callAll(_onWaiting, onWaiting)}
         onPause={callAll(_onPause, onPause)}
         onPlay={callAll(_onPlay, onPlay)}
-        onTimeUpdate={callAll(_onTimeUpdate, onTimeUpdate)}
+        onTimeUpdate={() => {
+          callAll(_onTimeUpdate, onTimeUpdate);
+          // console.log('timeupdate');
+        }}
         onEmptied={callAll(_onEmptied, onEmptied)}
-        onEnded={callAll(_onEnded, onEnded)}
+        onEnded={() => {
+          console.log('Ended');
+          callAll(_onEnded, onEnded);
+        }}
         controls
         style={{
           margin: 'left',
