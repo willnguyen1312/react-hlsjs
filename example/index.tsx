@@ -121,6 +121,13 @@ const App = () => {
                       console.log(`Paused at: ${getMediaStat().currentTime}`),
                   ]}
                   onVolumeChange={() => console.log('Volume changed')}
+                  // onPause={[
+                  //   () =>
+                  //     console.log(`Paused at: ${getMediaStat().currentTime}`),
+                  // ]}
+                  // onVolumeChange={() => console.log('Volume changed')}
+                  onWaiting={() => console.log('onWaiting')}
+                  onSeeking={() => console.log('onSeeking')}
                 />
               )}
             />
