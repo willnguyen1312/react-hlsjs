@@ -77,7 +77,7 @@ export const Video: FC<MediaProps> = ({
   };
 
   useEffect(() => {
-    var checkInterval = 50.0; // check every 50 ms (do not use lower values)
+    var checkInterval = 250; // check every 50 ms (do not use lower values)
     var lastPlayPos = 0;
     var lastDiff = 0;
     var currentPlayPos = 0;
@@ -91,7 +91,7 @@ export const Video: FC<MediaProps> = ({
       var newDiff = currentPlayPos - lastPlayPos;
 
       if (lastDiff !== newDiff) {
-        console.log(lastDiff);
+        // console.log(lastDiff);
         lastDiff = newDiff;
       }
 
