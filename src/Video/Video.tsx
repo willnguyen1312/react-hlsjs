@@ -133,10 +133,7 @@ export const Video: FC<MediaProps> = ({
           const timeRanges = Array.from(
             { length: buffered.length },
             (_, index) => {
-              return [
-                Math.round(buffered.start(index)),
-                Math.round(buffered.end(index)),
-              ];
+              return [buffered.start(index), buffered.end(index)];
             }
           );
 
