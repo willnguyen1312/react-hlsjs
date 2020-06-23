@@ -14,6 +14,7 @@ export interface MediaProps {
   onTimeUpdate?: MediaPropsEventListener;
   onEmptied?: MediaPropsEventListener;
   onEnded?: MediaPropsEventListener;
+  onProgress?: MediaPropsEventListener;
 }
 
 interface MediaContextType extends MediaContextProps {

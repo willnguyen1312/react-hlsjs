@@ -15,6 +15,7 @@ export const Video: FC<MediaProps> = ({
   onTimeUpdate,
   onVolumeChange,
   onWaiting,
+  onProgress,
 }) => {
   const {
     mediaRef,
@@ -80,7 +81,7 @@ export const Video: FC<MediaProps> = ({
     <div>
       <h1>{`Hello Video ${isLoading ? 'Loading' : ''}`}</h1>
       <video
-        onProgress={_onProgress}
+        onProgress={callAll(_onProgress, onProgress)}
         onSeeking={callAll(_onSeeking, onSeeking)}
         onLoadedMetadata={callAll(_onLoadedMetadata, onLoadedMetadata)}
         onRateChange={callAll(_onRateChange, onRateChange)}
