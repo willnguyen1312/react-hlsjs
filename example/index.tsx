@@ -116,14 +116,14 @@ const App = () => {
             <MediaConsumer
               render={({ getMediaStat }) => (
                 <Video
-                  onProgress={() => console.log('Progress')}
+                  // onProgress={() => console.log('Progress')}
                   onPause={[
                     () =>
                       console.log(`Paused at: ${getMediaStat().currentTime}`),
                   ]}
-                  onVolumeChange={() => console.log('Volume changed')}
+                  // onVolumeChange={() => console.log('Volume changed')}
                   onWaiting={() => console.log('onWaiting')}
-                  onSeeking={() => console.log('onSeeking')}
+                  // onSeeking={() => console.log('onSeeking')}
                 />
               )}
             />

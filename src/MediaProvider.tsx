@@ -110,13 +110,16 @@ export const MediaProvider: FC<MediaProviderProps> = ({
     const timeRanges = Array.from(
       { length: media.buffered.length },
       (_, index) => {
-        return [media.buffered.start(index), media.buffered.end(index)];
+        return [
+          Math.floor(media.buffered.start(index)),
+          Math.floor(media.buffered.end(index)),
+        ];
       }
     );
 
     return timeRanges.some(timeRange => {
       const [start, end] = timeRange;
-      return currentTime >= start && currentTime <= end;
+      return currentTime >= start && currentTime <= end - 1;
     });
   };
 
@@ -157,9 +160,9 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   const _onEmptied = () => updateIsLoading(true);
 
   const _onWaiting = () => {
-    if (!checkMediaHasDataToPlay()) {
-      updateIsLoading(true);
-    }
+    console.log(123);
+
+    updateIsLoading(!checkMediaHasDataToPlay());
   };
 
   const _onTimeUpdate = () => updateCurrentTime(_getMedia().currentTime);

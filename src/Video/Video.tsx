@@ -74,7 +74,7 @@ export const Video: FC<MediaProps> = ({
   );
 
   const changePlaybackRate = () => {
-    playbackRate === 1 ? setPlaybackRate(2) : setPlaybackRate(1);
+    playbackRate === 1 ? setPlaybackRate(4) : setPlaybackRate(1);
   };
 
   return (
