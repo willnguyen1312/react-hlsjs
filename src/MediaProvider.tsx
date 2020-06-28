@@ -106,20 +106,25 @@ export const MediaProvider: FC<MediaProviderProps> = ({
 
   const checkMediaHasDataToPlay = () => {
     const media = _getMedia();
-    const currentTime = media.currentTime;
+    const { currentTime, duration } = media;
     const timeRanges = Array.from(
       { length: media.buffered.length },
       (_, index) => {
         return [
           Math.floor(media.buffered.start(index)),
-          Math.floor(media.buffered.end(index)),
+          media.buffered.end(index),
         ];
       }
     );
 
     return timeRanges.some(timeRange => {
       const [start, end] = timeRange;
-      return currentTime >= start && currentTime <= end - 1;
+      return (
+        (currentTime >= start && currentTime <= end - 1) ||
+        (currentTime >= start &&
+          currentTime <= end &&
+          Math.floor(end) === Math.floor(duration))
+      );
     });
   };
 
