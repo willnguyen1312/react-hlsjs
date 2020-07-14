@@ -16,6 +16,7 @@ export const Video: FC<MediaProps> = ({
   onVolumeChange,
   onWaiting,
   onProgress,
+  onDurationChange,
 }) => {
   const {
     mediaRef,
@@ -44,6 +45,7 @@ export const Video: FC<MediaProps> = ({
     _onEmptied,
     _onEnded,
     _onProgress,
+    _onDurationChange,
     buffered,
     fps,
   } = _useMediaContext();
@@ -93,6 +95,7 @@ export const Video: FC<MediaProps> = ({
         onTimeUpdate={callAll(_onTimeUpdate, onTimeUpdate)}
         onEmptied={callAll(_onEmptied, onEmptied)}
         onEnded={callAll(_onEnded, onEnded)}
+        onDurationChange={callAll(_onDurationChange, onDurationChange)}
         controls
         style={{
           margin: 'left',

@@ -137,13 +137,14 @@ export const MediaProvider: FC<MediaProviderProps> = ({
   };
 
   const _onLoadedMetadata = async () => {
-    while (_getMedia().duration === Infinity) {
-      // Loop until duration is ready
-      await new Promise(res => setTimeout(res, 100));
-    }
-
-    updateDuration(_getMedia().duration);
+    // while (_getMedia().duration === Infinity) {
+    //   // Loop until duration is ready
+    //   await new Promise(res => setTimeout(res, 100));
+    // }
+    // updateDuration(_getMedia().duration);
   };
+
+  const _onDurationChange = () => updateDuration(_getMedia().duration);
 
   const _onRateChange = () => updatePlaybackRate(_getMedia().playbackRate);
 
@@ -248,6 +249,7 @@ export const MediaProvider: FC<MediaProviderProps> = ({
         _onTimeUpdate,
         _onEmptied,
         _onEnded,
+        _onDurationChange,
       }}
     >
       {children}

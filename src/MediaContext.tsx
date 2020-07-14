@@ -15,6 +15,7 @@ export interface MediaProps {
   onEmptied?: MediaPropsEventListener;
   onEnded?: MediaPropsEventListener;
   onProgress?: MediaPropsEventListener;
+  onDurationChange?: MediaPropsEventListener;
 }
 
 interface MediaContextType extends MediaContextProps {
@@ -34,6 +35,7 @@ interface MediaContextType extends MediaContextProps {
   _onTimeUpdate: () => void;
   _onEmptied: () => void;
   _onEnded: () => void;
+  _onDurationChange?: () => void;
 }
 
 export interface MediaStat {
